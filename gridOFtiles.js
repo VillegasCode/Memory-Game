@@ -1,7 +1,7 @@
 let faceDownImage;
 
 function preload() {
-    faceDownImage = loadImage('assets/pikachu.png');
+    faceDownImage = loadImage('tiles/pikachu.png');
 }
 function setup() {
     // Create a CANVAS with WIDTH and HEIGHT of size BROWSER
