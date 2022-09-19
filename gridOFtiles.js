@@ -1,10 +1,17 @@
 var faceDownImage;
 var canvas;
+var faces = [];
 
 function preload() {
     //Preload the image in faceDownImage variable
-    faceDownImage = loadImage('tiles/pikachu.png');
-}
+    faceDownImage = loadImage('tiles/pikachuYcharmander.png');
+
+        // Declare an array of all possible faces
+        for (var num = 1; num < 16; num++) {
+            //The names of pictures are correlatives
+            faces[num-1] = loadImage("faces/face" + num + ".png");
+        }
+    }
 
 function setup() {
         // Create a CANVAS with WIDTH and HEIGHT that you want
@@ -31,25 +38,15 @@ function setup() {
         }
     };
 
-// Declare an array of all possible faces
-var faces = [
-    getImage("avatars/leafers-seed"),
-    getImage("avatars/leafers-seedling"),
-    getImage("avatars/leafers-sapling"),
-    getImage("avatars/leafers-tree"),
-    getImage("avatars/leafers-ultimate"),
-    getImage("avatars/marcimus"),
-    getImage("avatars/mr-pants"),
-    getImage("avatars/mr-pink"),
-    getImage("avatars/old-spice-man"),
-    getImage("avatars/robot_female_1"),
-    getImage("avatars/piceratops-tree"),
-    getImage("avatars/orange-juice-squid")
-];
+    //It's a method verify if mouse x and y are into a tile
+    Tile.prototype.isUnderMouse = function(x, y) {
+        return x >= this.x && x <= this.x + this.size  &&
+            y >= this.y && y <= this.y + this.size;
+    };
 
 // Make an array which has 2 of each, then randomize it
 var selected = [];
-for (var i = 0; i < 10; i++) {
+for (var i = 0; i < 15; i++) {
     // Randomly pick one from the array of remaining faces
     var randomInd = floor(random(faces.length));
     var face = faces[randomInd];
@@ -93,10 +90,41 @@ shuffleArray(selected);
             tiles.push(tile);
         }
     }
+    
 
-    // Start by drawing them all face down
-    for (var i = 0; i < tiles.length; i++) {
-        tiles[i].isFaceUp = true;
-        tiles[i].draw();
-    }
+    var numFlipped = 0;
+    var delayStartFC = null;
+
+    mouseClicked = function() {
+        // check if mouse was inside a tile
+        for (var i = 0; i < tiles.length; i++) {
+            tile = tiles[i];
+            if (tile.isUnderMouse(mouseX, mouseY)) {
+                if (numFlipped < 2 && !tile.isFaceUp) {
+                    tile.isFaceUp = true;
+                    numFlipped++;
+                    if (numFlipped === 2) {
+                        delayStartFC = frameCount;
+                    }
+                    loop();
+                }
+            }
+        }
+    };
+
+    //Draw tiles
+    draw = function() {
+        if (delayStartFC && (frameCount - delayStartFC) > 30) {
+            for (var i = 0; i < tiles.length; i++) {
+                tiles[i].isFaceUp = false;
+            }
+            numFlipped = 0;
+            delayStartFC = null;
+            noLoop();
+        }
+        background(255, 255, 255);
+        for (var i = 0; i < tiles.length; i++) {
+            tiles[i].draw();
+        }
+    };
 }
