@@ -27,15 +27,20 @@ function setup() {
     };
 
     //Create a METHOD draw to Tile object
-    Tile.prototype.draw = function() {
+    Tile.prototype.drawFaceDown = function() {
         fill(214, 247, 202);
         strokeWeight(2);
         rect(this.x, this.y, this.size, this.size, 10);
-        if (this.isFaceUp) {
-            image(this.face, this.x, this.y, this.size, this.size);
-        } else {
-            image(faceDownImage, this.x, this.y, this.size, this.size);
-        }
+        image(faceDownImage, this.x, this.y, this.size, this.size);
+        this.isFaceUp = false;
+    };
+
+    Tile.prototype.drawFaceUp = function() {
+        fill(214, 247, 202);
+        strokeWeight(2);
+        rect(this.x, this.y, this.size, this.size, 10);
+        image(this.face, this.x, this.y, this.size, this.size);
+        this.isFaceUp = true;
     };
 
     //It's a method verify if mouse x and y are into a tile
@@ -91,8 +96,12 @@ shuffleArray(selected);
         }
     }
     
+    // Now draw them face down
+    for (var i = 0; i < tiles.length; i++) {
+        tiles[i].drawFaceDown();
+    }
 
-    var numFlipped = 0;
+    var flippedTiles = [];
     var delayStartFC = null;
 
     mouseClicked = function() {
@@ -100,13 +109,17 @@ shuffleArray(selected);
         for (var i = 0; i < tiles.length; i++) {
             tile = tiles[i];
             if (tile.isUnderMouse(mouseX, mouseY)) {
-                if (numFlipped < 2 && !tile.isFaceUp) {
-                    tile.isFaceUp = true;
-                    numFlipped++;
-                    if (numFlipped === 2) {
+                if (flippedTiles.length < 2 && !tile.isFaceUp) {
+                    tile.drawFaceUp();
+                    flippedTiles.push(tile);
+                    if (flippedTiles.length === 2) {
+                        if (flippedTiles[0].face === flippedTiles[1].face) {
+                            flippedTiles[0].isMatch = true;
+                            flippedTiles[1].isMatch = true;
+                        }
                         delayStartFC = frameCount;
+                        loop();
                     }
-                    loop();
                 }
             }
         }
@@ -116,15 +129,16 @@ shuffleArray(selected);
     draw = function() {
         if (delayStartFC && (frameCount - delayStartFC) > 30) {
             for (var i = 0; i < tiles.length; i++) {
-                tiles[i].isFaceUp = false;
+                if (!tiles[i].isMatch) {
+                    tiles[i].drawFaceDown();                }
             }
-            numFlipped = 0;
+            flippedTiles = [];
             delayStartFC = null;
             noLoop();
         }
-        background(255, 255, 255);
+        /*background(255, 255, 255);
         for (var i = 0; i < tiles.length; i++) {
             tiles[i].draw();
-        }
+        }*/
     };
 }
