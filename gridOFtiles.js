@@ -3,7 +3,7 @@ var faceDownImage;
 var canvas;
 var faces = [];
 var h1;
-var NUM_COLS = 5;
+var NUM_COLS = 4;
 var NUM_ROWS = 6;
 
 function preload() {
@@ -22,7 +22,7 @@ function setup() {
     h1 = createElement("h1","POKEMON MEMORY GAME");
     // Create a CANVAS with WIDTH and HEIGHT that you want
         canvas = createCanvas(800,800);
-        canvas.position(20,20);
+        canvas.position(0,50);
     //Create a CONSTRUCTOR FUNCTION named Tile
     var Tile = function(x, y, face) {
         this.x = x;
