@@ -1,14 +1,19 @@
 // Global config
+var w = window.innerWidth;
+var h = window.innerHeight;  
 var faceDownImage;
 var canvas;
 var faces = [];
 var h1;
 var NUM_COLS = 4;
 var NUM_ROWS = 6;
-
+var sizeCard;
+var fichaSize=80;
+var timeLimit = 20;
+var countdown0; //time limit - amount of time passed
 function preload() {
     //Preload the image in faceDownImage variable
-    faceDownImage = loadImage('tiles/pikachuYcharmander.png');
+    faceDownImage = loadImage('tiles/pikachuVillegasCODE.png');
 
         // Declare an array of all possible faces
         for (var num = 0; num < 30; num++) {
@@ -18,16 +23,29 @@ function preload() {
     }
 
 function setup() {
+    frameRate(30);
+    if(w < 550) {
+        sizeCard = 63;
+    } else {
+        sizeCard = 80;
+    }
+
     //Create H1 ELEMENT
     h1 = createElement("h1","POKEMON MEMORY GAME");
     // Create a CANVAS with WIDTH and HEIGHT that you want
-        canvas = createCanvas(800,800);
-        canvas.position(0,50);
+
+
+
+
+        canvas = createCanvas(w,h);
+        canvas.position(0,100);
+
     //Create a CONSTRUCTOR FUNCTION named Tile
     var Tile = function(x, y, face) {
         this.x = x;
-        this.y = y;
-        this.size = 70;
+       this.y = y;
+        this.size = sizeCard;
+        fichaSize = this.size;
         this.face = face;
         this.isFaceUp = false;
         this.isMatch = false;
@@ -36,7 +54,7 @@ function setup() {
     //Create a METHOD draw to Tile object
     Tile.prototype.draw = function() {
         fill(214, 247, 202);
-        strokeWeight(2);
+        strokeWeight(7);
         rect(this.x, this.y, this.size, this.size, 10);
         if (this.isFaceUp) {
             image(this.face, this.x, this.y, this.size, this.size);
@@ -87,8 +105,8 @@ shuffleArray(selected);
     var tiles = [];
     for (var i = 0; i < NUM_COLS; i++) {
         for (var j = 0; j < NUM_ROWS; j++) {
-            var tileX = i * 74 + 5;
-            var tileY = j * 74 + 40;
+            var tileX = i * (fichaSize+10) + 5;
+            var tileY = j * (fichaSize+10) + 40;
             var tileFace = selected.pop();
             tiles.push(new Tile(tileX, tileY, tileFace));
         }
@@ -114,7 +132,10 @@ shuffleArray(selected);
                             flippedTiles[0].isMatch = true;
                             flippedTiles[1].isMatch = true;
                             flippedTiles.length = 0;
+                            //Count the matches
                             numMatches++;
+                            //Increase 10 seconds each time there is a match
+                            timeLimit = timeLimit + 10;
                         }
                         delayStartFC = frameCount;
                     }
@@ -126,8 +147,13 @@ shuffleArray(selected);
 
     //Draw tiles
     draw = function() {
-        background(255, 255, 255);
-        h1.position(0,0);
+        background(200, 0, 0);
+        
+        fill(255,255,255);
+            textSize(20);
+            text("Tries: " + numTries, 0, 590);
+            text("Matches: " + numMatches + " of " + (tiles.length/2), 150, 590);
+
         if (delayStartFC && (frameCount - delayStartFC) > 30) {
             for (var i = 0; i < tiles.length; i++) {
                 var tile = tiles[i];
@@ -137,9 +163,6 @@ shuffleArray(selected);
             }
             flippedTiles = [];
             delayStartFC = null;
-            fill(0,0,0);
-            textSize(20);
-            text("Tries: " + numTries, 0, 530);
             noLoop();
         }
 
@@ -148,10 +171,22 @@ shuffleArray(selected);
         }
 
         if (numMatches === tiles.length/2) {
-            fill(0,0,0);
+            fill(255,255,255);
             textSize(20);
-            text("Good work! You found them all in " + numTries + " tries", 0, 500);
+            text("Good work! You found them all in " + numTries + " tries.\nBeat your Record doing it in fewer attempts", 0, 620);
         }
+    var currentTime = int(millis()/1000); //Convert time to second as an integer (INT) - no decimals
+    countdown0 = timeLimit - currentTime; //Countdown0 = 15 - amount of time passed
+    var cuentaRegresiva = document.getElementById('countdown0');
+    //if 15 seconds has passed, keep countdown at 0
+    if (countdown0 < 0) {
+        countdown0 = 0;
+        textSize(32);
+        cuentaRegresiva.innerHTML = "You lost";
+        text("GAME OVER", width / 2 - 50, height /2);
+    } else {
+        cuentaRegresiva.innerHTML = `You have ${countdown0} seconds`;
+    }
     };
-    noLoop();
+    
 }
