@@ -5,7 +5,7 @@ var faceDownImage;
 var canvas;
 var faces = [];
 var h1;
-var NUM_COLS = 4;
+var NUM_COLS = 5;
 var NUM_ROWS = 6;
 var sizeCard;
 var fichaSize=80;
@@ -16,7 +16,7 @@ function preload() {
     faceDownImage = loadImage('tiles/pikachuVillegasCODE.png');
 
         // Declare an array of all possible faces
-        for (var num = 0; num < 30; num++) {
+        for (var num = 0; num < 31; num++) {
             //The names of pictures are correlatives
             faces[num] = loadImage("faces/face" + num + ".png");
         }
