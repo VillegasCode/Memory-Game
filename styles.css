@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css?family=Tangerine&display=swap');
+body {
+      padding: 0;
+      margin: 0;
+      background-color: rgb(200, 0, 0);
+      }
+
+#subtitulo {
+      color: darkblue;
+      font-family:'Arial', cursive;    
+      font-weight: bolder;
+      font-size: 1.3rem;
+}
