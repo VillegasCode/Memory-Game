@@ -6,8 +6,38 @@ body {
       }
 
 #subtitulo {
+      margin-top: 0em;
+      padding-top:0em;
+      color: darkblue;
+      font-family:'Arial', cursive;    
+      font-weight: bolder;
+      font-size: 1.5rem;
+}
+
+#countdown0 {
+      color: rgb(255, 255, 255);
+      margin-top: 0em;
+      padding-top: 0em;
+      margin-bottom: 0em;
+      padding-bottom: 0em;
+}
+
+#yourStatus {
+      color: rgb(255, 255, 255);
+      margin-top: 0em;
+      padding-top:0em;
+}
+
+#subtitulo1 {
+      padding-top: 620px;
       color: darkblue;
       font-family:'Arial', cursive;    
       font-weight: bolder;
       font-size: 1.3rem;
+}
+
+#statistics {
+      color: rgb(0, 0, 0);
+      margin-top: 0em;
+      padding-top:0em;
 }

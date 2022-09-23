@@ -1,10 +1,9 @@
 // Global config
 var w = window.innerWidth;
-var h = window.innerHeight;  
+var h = 575;  
 var faceDownImage;
 var canvas;
 var faces = [];
-var h1;
 var NUM_COLS = 5;
 var NUM_ROWS = 6;
 var sizeCard;
@@ -30,15 +29,9 @@ function setup() {
         sizeCard = 80;
     }
 
-    //Create H1 ELEMENT
-    h1 = createElement("h1","POKEMON MEMORY GAME");
     // Create a CANVAS with WIDTH and HEIGHT that you want
-
-
-
-
         canvas = createCanvas(w,h);
-        canvas.position(0,100);
+        canvas.position(0,132);
 
     //Create a CONSTRUCTOR FUNCTION named Tile
     var Tile = function(x, y, face) {
@@ -147,12 +140,12 @@ shuffleArray(selected);
 
     //Draw tiles
     draw = function() {
-        background(200, 0, 0);
+            background(200, 0, 0);
         
-        fill(255,255,255);
+            fill(0,0,0);
             textSize(20);
-            text("Tries: " + numTries, 0, 590);
-            text("Matches: " + numMatches + " of " + (tiles.length/2), 150, 590);
+            var statistics = document.getElementById('statistics');
+            statistics.innerHTML = `Tries: ${numTries} | Matches: ${numMatches} of ${(tiles.length/2)}`;
 
         if (delayStartFC && (frameCount - delayStartFC) > 30) {
             for (var i = 0; i < tiles.length; i++) {
@@ -170,23 +163,39 @@ shuffleArray(selected);
             tiles[i].draw();
         }
 
+        ganar = function() {
         if (numMatches === tiles.length/2) {
-            fill(255,255,255);
-            textSize(20);
-            text("Good work! You found them all in " + numTries + " tries.\nBeat your Record doing it in fewer attempts", 0, 620);
+            fill(0,0,0);
+            textSize(60);
+            text("YOU WIN", width / 2 - 50, height /2);
+            //if (secondsTime > countdown0) {
+            //text("Good work! You found them all in " + numTries + " tries.\nBeat your Record doing it in fewer attempts", 0, 620);
+            yourStatus.innerHTML = `YOU WIN, you're a champion`;
+            //}
         }
+    }
     var currentTime = int(millis()/1000); //Convert time to second as an integer (INT) - no decimals
     countdown0 = timeLimit - currentTime; //Countdown0 = 15 - amount of time passed
     var cuentaRegresiva = document.getElementById('countdown0');
+    var yourStatus = document.getElementById('yourStatus');
     //if 15 seconds has passed, keep countdown at 0
-    if (countdown0 < 0) {
+    if (countdown0 < 0 && numMatches < tiles.length/2) {
         countdown0 = 0;
+        textSize(60);
+        yourStatus.innerHTML = "YOU LOST,\nREFRESH THIS PAGE TO TRY AGAIN!";
+        text("GAME OVER", width / 2 - 100, height /2);
         textSize(32);
-        cuentaRegresiva.innerHTML = "You lost";
-        text("GAME OVER", width / 2 - 50, height /2);
-    } else {
-        cuentaRegresiva.innerHTML = `You have ${countdown0} seconds`;
+        cuentaRegresiva.innerHTML = `You have ${countdown0} seconds left`;
+        // Now draw them face up all tiles because user lost game
+    for (var i = 0; i < tiles.length; i++) {
+        tiles[i].isFaceUp = true;
+        tiles[i].draw();
     }
+    } else if (countdown0 > 0 && numMatches < tiles.length/2) {
+        textSize(32);
+        cuentaRegresiva.innerHTML = `You have ${countdown0} seconds left (Add 10 seconds for each match)`;
+    }
+    ganar();
     };
     
 }
